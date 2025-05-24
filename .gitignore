@@ -1,0 +1,46 @@
+# === Node modules ===
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# === Build directories ===
+client/build/
+server/build/
+dist/
+.temp/
+
+# === Logs ===
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Environment Variables ===
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+client/.env
+server/.env
+
+# === OS & Editor-specific files ===
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# === Testing ===
+coverage/
+*.lcov
+
+# === Misc ===
+*.log
+*.tgz
+*.bak
+*.zip
+
+# === Optional: If using typescript in client/server ===
+client/tsconfig.tsbuildinfo
+server/tsconfig.tsbuildinfo
