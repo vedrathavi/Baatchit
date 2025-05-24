@@ -80,3 +80,27 @@ export const login = async (req, res, next) => {
     return res.status(500).send("Internal Server Error");
   }
 };
+
+export const getUserInfo = async (req, res, next) => {
+  try {
+    const userData = await User.findById(req.userId);
+    if (!userData) {
+      return res.status(404).send("User with given ID not found");
+    }
+    return res.status(200).json({
+      id: userData.id,
+      email: userData.email,
+      profileSetup: userData.profileSetup,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      color: userData.color,
+      image: userData.image,
+    });
+  } catch (err) {
+    if (err.code === 11000 && err.keyPattern?.email) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
+    console.log({ err });
+    return res.status(500).send("Internal Server Error");
+  }
+};
