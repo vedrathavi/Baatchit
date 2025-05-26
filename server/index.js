@@ -5,6 +5,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/AuthRoutes.js";
 
+
+
 dotenv.config();
 
 const app = express();
@@ -19,6 +21,7 @@ app.use(
   })
 );
 
+app.use("/uploads/profiles", express.static("uploads/profiles"));
 app.use(cookieParser());
 app.use(express.json());
 
