@@ -3,6 +3,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import ContactsContainer from "./components/contacts-container";
+import EmptyChatContainer from "./components/empty-chat-container";
+import ChatContainer from "./components/chat-container";
 
 const Chat = () => {
   const { userInfo } = useAppStore();
@@ -14,7 +17,13 @@ const Chat = () => {
     }
   }, [userInfo, navigate]);
 
-  return <div></div>;
+  return (
+    <div className="flex w-[100vw] h-[100vh] overflow-hidden">
+      <ContactsContainer />
+      {/* <EmptyChatContainer /> */}
+      <ChatContainer />
+    </div>
+  );
 };
 
 export default Chat;
