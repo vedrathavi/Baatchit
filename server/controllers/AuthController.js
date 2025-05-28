@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
 import { compare } from "bcrypt";
 import { renameSync, unlinkSync } from "fs";
+import path from "path";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 const createToken = (email, userId) => {
@@ -180,6 +181,22 @@ export const removeProfileImage = async (req, res, next) => {
     await user.save();
 
     return res.status(200).send("Profile Picture removed");
+  } catch (err) {
+    console.log({ err });
+    return res.status(500).send("Internal Server Error");
+  }
+};
+
+export const logOut = async (req, res, next) => {
+  try {
+    res.cookie("jwt", "", {
+      maxAge: 1,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      path: "/",
+    });
+    res.status(200).send("Log out Successful");
   } catch (err) {
     console.log({ err });
     return res.status(500).send("Internal Server Error");
