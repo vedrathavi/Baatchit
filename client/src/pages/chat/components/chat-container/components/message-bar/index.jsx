@@ -26,7 +26,7 @@ const MessageBar = () => {
   const handleSendMessage = async () => {};
 
   return (
-    <div className="h-[10vh] bg-neutral-900 flex justify-center items-center px-8 gap-6 mb-6">
+    <div className="h-[10vh] bg-neutral-900 flex justify-center items-center px-8 gap-3 lg:w-full sm:w-[80vw] mb-6">
       <div className="flex-1 flex bg-neutral-800 rounded-xl items-center gap-5 pr-5">
         <input
           type="text"
