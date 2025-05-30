@@ -25,7 +25,6 @@ import { HOST } from "@/utils/constants";
 import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
 
-
 const NewDM = () => {
   const { setSelectedChatType, setSelectedChatData } = useAppStore();
   const [openNewContactModal, setopenNewContactModal] = useState(false);
@@ -117,7 +116,7 @@ const NewDM = () => {
                           <AvatarImage
                             src={`${HOST}/${contact.image}`}
                             alt="profile"
-                            className="object-cover w-full h-full bg-black"
+                            className="object-cover w-full h-full bg-black rounded-full"
                           />
                         ) : (
                           <div

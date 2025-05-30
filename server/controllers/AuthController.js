@@ -156,6 +156,7 @@ export const addProfileImage = async (req, res, next) => {
       { image: fileName },
       { new: true, runValidators: true }
     );
+
     return res.status(200).json({
       image: updatedUser.image,
     });
