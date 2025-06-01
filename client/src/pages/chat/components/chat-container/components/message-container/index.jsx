@@ -1,9 +1,12 @@
 import { apiClient } from "@/lib/api-client";
-import { getColor } from "@/lib/utils";
+
 import { useAppStore } from "@/store";
-import { GET_ALL_MESSAGES_ROUTE } from "@/utils/constants";
+import { GET_ALL_MESSAGES_ROUTE, HOST } from "@/utils/constants";
 import moment from "moment";
 import { useEffect, useRef } from "react";
+import { IoMdArrowRoundDown } from "react-icons/io";
+import { MdFolderZip } from "react-icons/md";
+import { toast } from "sonner";
 
 const MessageContainer = () => {
   const scrollRef = useRef();
@@ -14,6 +17,12 @@ const MessageContainer = () => {
     selectedChatMessages,
     setSelectedChatMessages,
   } = useAppStore();
+
+  const checkIfImage = (filePath) => {
+    const imageRegex =
+      /\.(jpg|jpeg|png|gif|bmp|tiff|tif|webp|svg|ico|heic|heif)$/i;
+    return imageRegex.test(filePath);
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -47,6 +56,26 @@ const MessageContainer = () => {
     }
   }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
 
+  const downloadFile = async (url) => {
+    try {
+      const response = await apiClient.get(`${HOST}/${url}`, {
+        responseType: "blob",
+      });
+
+      const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = urlBlob;
+      link.setAttribute("download", url.split("/").pop());
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(urlBlob);
+    } catch (e) {
+      toast.error("Failed to Download");
+      console.log(e);
+    }
+  };
+
   const renderMessages = () => {
     let lastDate = null;
     return selectedChatMessages.map((message, index) => {
@@ -68,30 +97,62 @@ const MessageContainer = () => {
   };
 
   const renderDMMessages = (message) => {
+    const isMyMessage = String(message.sender) === String(userInfo.id);
+
     return (
-      <div
-        className={`${
-          message.sender === selectedChatData._id ? "text-right" : "text-left"
-        }`}
-      >
+      <div className={isMyMessage ? "text-right" : "text-left"}>
         {message.messageType === "text" && (
           <div
             className={`${
-              message.sender === selectedChatData._id
-                ? `${getColor(userInfo.color)}`
-                : "bg-neutral-400/5 text-neutral-100/90 border-neutral-100/20"
-            } 
-          border inline-block py-2 px-4 rounded-xl my-1 max-w-[50%] break-words`}
+              isMyMessage
+                ? "bg-neutral-300/10 text-neutral-100 border border-neutral-500/20 "
+                : "bg-neutral-700/10 text-neutral-200 border border-neutral-600/20 "
+            } border inline-block py-2 px-4 rounded-xl my-1 max-w-[50%] break-words`}
           >
             {message.content}
           </div>
         )}
+
+        {message.messageType === "file" && (
+          <div
+            className={`${
+              isMyMessage
+                ? "bg-neutral-300/10 text-neutral-100 border border-neutral-500/20 "
+                : "bg-neutral-700/10 text-neutral-100/90 border-neutral-100/20"
+            } border inline-block py-2 px-2 rounded-xl my-1 max-w-[50%] break-words`}
+          >
+            {checkIfImage(message.fileUrl) ? (
+              <div className="cursor-pointer">
+                <img
+                  src={`${HOST}/${message.fileUrl}`}
+                  height={300}
+                  width={300}
+                />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-4 p-2">
+                <span className="text-xl bg-black/20 rounded-lg p-3">
+                  <MdFolderZip />
+                </span>
+                <span>{message.fileUrl.split("/").pop()}</span>
+                <span
+                  className="text-lg bg-green-800/20 text-green-600 rounded-full p-3  cursor-pointer transition-all duration-300 hover:bg-green-800/50"
+                  onClick={() => downloadFile(message.fileUrl)}
+                >
+                  <IoMdArrowRoundDown />
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="text-xs text-neutral-500">
           {moment(message.timestamp).format("LT")}
         </div>
       </div>
     );
   };
+
   return (
     <div className="flex-1 overflow-y-auto scrollbar-hidden p-4 px-8 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] sm:w-full">
       {renderMessages()}
