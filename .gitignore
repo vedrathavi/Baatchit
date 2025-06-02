@@ -9,7 +9,7 @@ server/build/
 dist/
 .temp/
 server/uploads/profiles
-
+server/uploads/files
 # === Logs ===
 npm-debug.log*
 yarn-debug.log*

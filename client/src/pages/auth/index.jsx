@@ -141,7 +141,7 @@ const Auth = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 ></Input>
                 <Button
-                  className="rounded-full p-6 bg-purple-900"
+                  className="rounded-full p-6 bg-purple-800 hover:bg-purple-900"
                   onClick={handleLogin}
                 >
                   Login
@@ -171,7 +171,7 @@ const Auth = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 ></Input>
                 <Button
-                  className="rounded-full p-6 bg-purple-900 "
+                  className="rounded-full p-6 bg-purple-800 hover:bg-purple-900 "
                   onClick={handleSignup}
                 >
                   Signup
