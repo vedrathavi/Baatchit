@@ -51,7 +51,7 @@ const CreateChannel = () => {
 
   const createChannel = async () => {
     try {
-      if (channelName.length >= 0 && selectedContacts.length >= 0) {
+      if (channelName.length > 0 && selectedContacts.length > 0) {
         const response = await apiClient.post(
           CREATE_CHANNEL_ROUTE,
           {
@@ -68,7 +68,6 @@ const CreateChannel = () => {
           setSelectedContacts([]);
           setNewChannelModal(false);
           addChannel(response.data.channel);
-
           console.log("channel created:", channelName);
         }
       }

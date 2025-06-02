@@ -12,32 +12,39 @@ const ChatHeader = () => {
       <div className="flex gap-5 items-center w-full justify-between">
         <div className="flex gap-3 items-center justify-center ">
           <div className="w-full h-12 relative flex gap-4 items-center ">
-            <Avatar className="h-12 w-12 rounded-full overflow-hidden">
-              {selectedChatData.image ? (
-                <AvatarImage
-                  src={`${HOST}/${selectedChatData.image}`}
-                  alt="profile"
-                  className="object-cover w-full h-full bg-black"
-                />
-              ) : (
-                <div
-                  className={`uppercase h-full w-full text-lg border-[1px] flex items-center justify-center rounded-full 
-                  ${getColor(selectedChatData.color)}`}
-                >
-                  {selectedChatData.firstName
-                    ? selectedChatData.firstName.split("").shift()
-                    : selectedChatData.email.split("").shift()}
-                </div>
-              )}
-            </Avatar>
+            {selectedChatType === "contact" ? (
+              <Avatar className="h-12 w-12 rounded-full overflow-hidden">
+                {selectedChatData.image ? (
+                  <AvatarImage
+                    src={`${HOST}/${selectedChatData.image}`}
+                    alt="profile"
+                    className="object-cover w-full h-full bg-black"
+                  />
+                ) : (
+                  <div
+                    className={`uppercase h-full w-full text-lg border-[1px] flex items-center justify-center rounded-full 
+                ${getColor(selectedChatData.color)}`}
+                  >
+                    {selectedChatData.firstName
+                      ? selectedChatData.firstName.split("").shift()
+                      : selectedChatData.email.split("").shift()}
+                  </div>
+                )}
+              </Avatar>
+            ) : (
+              <div className="bg-[#ffffff22] border-neutral-300/60 border-2 uppercase text-xl h-12 px-4 flex items-center justify-center rounded-full">
+                #
+              </div>
+            )}
+
             <div className="flex flex-col w-full">
-              <span className="w-full truncate">
+              <span className="w-full truncate text-xl">
                 {" "}
                 {selectedChatType === "contact"
-                  ? selectedChatData.firstName && selectedChatData.lastName
+                  ? selectedChatData.firstName
                     ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
                     : `${selectedChatData.email}`
-                  : ""}
+                  : selectedChatData.name}
               </span>
             </div>
           </div>
