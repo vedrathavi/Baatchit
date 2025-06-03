@@ -17,29 +17,47 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const validateLogin = () => {
-    if (!email.length) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+  const validateEmail = () => {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail.length) {
       toast.error("Email is required");
       return false;
     }
+    if (!emailRegex.test(trimmedEmail)) {
+      toast.error("Invalid email format");
+      return false;
+    }
+    setEmail(trimmedEmail);
+    return true;
+  };
+
+  const validatePassword = () => {
     if (!password.length) {
-      toast.error("password is required");
+      toast.error("Password is required");
+      return false;
+    }
+    if (!passwordRegex.test(password)) {
+      toast.error(
+        "Password must be 8+ characters, with uppercase, lowercase, number, and special character"
+      );
       return false;
     }
     return true;
   };
 
+  const validateLogin = () => validateEmail() && validatePassword();
   const validateSignup = () => {
-    if (!email.length) {
-      toast.error("Email is required");
-      return false;
-    }
-    if (!password.length) {
-      toast.error("password is required");
+    if (!validateLogin()) {
+      setPassword("");
+      setConfirmPassword("");
       return false;
     }
 
     if (password !== confirmPassword) {
+      setConfirmPassword("");
       toast.error("Password and confirm password should be same.");
       return false;
     }

@@ -3,6 +3,7 @@ import User from "../models/UserModel.js";
 import { compare } from "bcrypt";
 import { renameSync, unlinkSync } from "fs";
 import path from "path";
+import validator from "validator";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 const createToken = (email, userId) => {
@@ -13,12 +14,39 @@ const createToken = (email, userId) => {
 
 export const signup = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    email = email.trim();
     if (!email || !password) {
       return res.status(400).send("Email & password is required");
     }
 
-    const user = await User.create({ email, password });
+    if (!validator.isEmail(email)) {
+      return res.status(400).send("Invalid Email Format");
+    }
+
+    const isStrong = validator.isStrongPassword(password, {
+      minLength: 8,
+      minLowercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+      minUppercase: 1,
+    });
+
+    if (!isStrong) {
+      return res
+        .status(400)
+        .send(
+          "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
+        );
+    }
+    const normalizedEmail = email.toLowerCase();
+
+    const existingUser = await User.findOne({ email: normalizedEmail });
+    if (existingUser) {
+      return res.status(400).send("Email already in use");
+    }
+
+    const user = await User.create({ email: normalizedEmail, password });
     res.cookie("jwt", createToken(email, user.id), {
       httpOnly: true,
       maxAge,
@@ -45,8 +73,8 @@ export const login = async (req, res, next) => {
     if (!email || !password) {
       return res.status(400).send("Email & password is required");
     }
-
-    const user = await User.findOne({ email });
+    const normalizedEmail = email.toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
       return res.status(404).send("User not found!");
     }
