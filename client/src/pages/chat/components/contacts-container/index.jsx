@@ -39,7 +39,7 @@ const ContactsContainer = () => {
   }, [setChannels, setDirectMessagesContacts]);
 
   return (
-    <div className="relative w-full md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-neutral-800/70 border-r-2 border-neutral-400/20 ">
+    <div className="relative w-full md:w-[30vw] lg:w-[30vw] xl:w-[20vw] bg-neutral-800/70 border-r-2 border-neutral-400/20 ">
       <div className="pt-3 text-3xl font-bold pl-3">
         BAAT<span className="text-purple-600">CHIT</span>
       </div>
