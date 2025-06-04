@@ -12,6 +12,7 @@ import channelRoutes from "./routes/ChannelRoutes.js";
 dotenv.config();
 
 const app = express();
+app.set("trust proxy", 1);
 const port = process.env.PORT;
 const databaseURL = process.env.DATABASE_URL;
 
