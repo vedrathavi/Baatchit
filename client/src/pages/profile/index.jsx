@@ -214,7 +214,7 @@ const Profile = () => {
                   className={`${color} h-8 w-8 rounded-full cursor-pointer
                    ${
                      selectedColor === index
-                       ? "outline outline-white/70 outline-2"
+                       ? " outline-white/70 outline-2"
                        : ""
                    }`}
                   key={index}
