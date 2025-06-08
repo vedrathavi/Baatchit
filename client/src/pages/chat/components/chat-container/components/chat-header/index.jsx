@@ -12,7 +12,7 @@ const ChatHeader = () => {
       <div className="flex gap-5 items-center w-full justify-between">
         <div className="flex gap-3 items-center justify-center ">
           <div className="w-full h-12 relative flex gap-4 items-center ">
-            {selectedChatType === "contact" ? (
+            {selectedChatType === "contact" || selectedChatType === "ai" ? (
               <Avatar className="h-12 w-12 rounded-full overflow-hidden">
                 {selectedChatData.image ? (
                   <AvatarImage
@@ -23,11 +23,11 @@ const ChatHeader = () => {
                 ) : (
                   <div
                     className={`uppercase h-full w-full text-lg border-[1px] flex items-center justify-center rounded-full 
-                ${getColor(selectedChatData.color)}`}
+          ${getColor(selectedChatData.color)}`}
                   >
                     {selectedChatData.firstName
-                      ? selectedChatData.firstName.split("").shift()
-                      : selectedChatData.email.split("").shift()}
+                      ? selectedChatData.firstName.charAt(0)
+                      : selectedChatData.email.charAt(0)}
                   </div>
                 )}
               </Avatar>
@@ -39,11 +39,10 @@ const ChatHeader = () => {
 
             <div className="flex flex-col w-full">
               <span className="w-full truncate text-xl">
-                {" "}
-                {selectedChatType === "contact"
+                {selectedChatType === "contact" || selectedChatType === "ai"
                   ? selectedChatData.firstName
                     ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
-                    : `${selectedChatData.email}`
+                    : selectedChatData.email
                   : selectedChatData.name}
               </span>
             </div>

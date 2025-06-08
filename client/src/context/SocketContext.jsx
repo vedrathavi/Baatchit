@@ -1,5 +1,5 @@
 import { useAppStore } from "@/store";
-import { HOST } from "@/utils/constants";
+import { HOST, GEMINI_BOT_ID } from "@/utils/constants";
 import { createContext, useContext, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 
@@ -32,15 +32,19 @@ export const SocketeProvider = ({ children }) => {
           addContactsInDMContacts,
         } = useAppStore.getState();
 
+        const isAI = message.sender._id === GEMINI_BOT_ID;
         if (
           selectedChatType !== undefined &&
           (selectedChatData._id === message.sender._id ||
             selectedChatData._id === message.recipient._id)
         ) {
-          console.log("recieved:", message);
+          console.log("recieved:", message.content);
           addMessage(message);
         }
-        addContactsInDMContacts(message);
+
+        if (!isAI) {
+          addContactsInDMContacts(message);
+        }
       };
 
       const handleRecieveChannelMessage = (message) => {
@@ -60,7 +64,13 @@ export const SocketeProvider = ({ children }) => {
         addChannelInChannelList(message);
       };
 
-      socket.current.on("recieveMessage", handleRecieveMessage);
+      socket.current.on("recieveMessage", (message) => {
+        try {
+          handleRecieveMessage(message);
+        } catch (error) {
+          console.error("Error handling receiveMessage:", error);
+        }
+      });
       socket.current.on("recieve-channel-message", handleRecieveChannelMessage);
 
       return () => {

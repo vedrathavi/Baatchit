@@ -15,6 +15,8 @@ const ContactsContainer = () => {
     directMessagesContacts,
     setDirectMessagesContacts,
     channels,
+    ai,
+    setAi,
     setChannels,
   } = useAppStore();
   useEffect(() => {
@@ -25,6 +27,9 @@ const ContactsContainer = () => {
       if (response.data.contacts) {
         setDirectMessagesContacts(response.data.contacts);
       }
+      if (response.data.aiBot) {
+        setAi(response.data.aiBot);
+      }
     };
     const getChannels = async () => {
       const response = await apiClient.get(GET_USER_CHANNELS_ROUTE, {
@@ -34,9 +39,10 @@ const ContactsContainer = () => {
         setChannels(response.data.channels);
       }
     };
+
     getChannels();
     getContacts();
-  }, [setChannels, setDirectMessagesContacts]);
+  }, [setChannels, setDirectMessagesContacts, setAi]);
 
   return (
     <div className="relative w-full md:w-[30vw] lg:w-[30vw] xl:w-[20vw] bg-neutral-800/70 border-r-2 border-neutral-400/20 ">
@@ -45,14 +51,22 @@ const ContactsContainer = () => {
       </div>
       <div className="my-5">
         <div className="flex items-center justify-between pr-6">
+          <Title text="Chat with AI"></Title>
+        </div>
+        <div className="max-h-[20vh] overflow-y-auto scrollbar-hidden">
+          <ContactList contacts={ai ? [ai] : []} isAI={true} />
+        </div>
+      </div>
+      <div className="my-3">
+        <div className="flex items-center justify-between pr-6">
           <Title text="Direct Messages"></Title>
           <NewDM />
         </div>
-        <div className="max-h-[30vh] overflow-y-auto scrollbar-hidden">
+        <div className="max-h-[40vh] overflow-y-auto scrollbar-hidden">
           <ContactList contacts={directMessagesContacts} />
         </div>
       </div>
-      <div className="my-5">
+      <div className="my-3">
         <div className="flex items-center justify-between pr-6">
           <Title text="Channels"></Title>
           <CreateChannel />

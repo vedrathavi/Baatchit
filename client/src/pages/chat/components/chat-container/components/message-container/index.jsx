@@ -76,7 +76,7 @@ const MessageContainer = () => {
       }
     };
     if (selectedChatData._id) {
-      if (selectedChatType === "contact") {
+      if (selectedChatType === "contact" || selectedChatType === "ai") {
         getMessages();
       } else if (selectedChatType === "channel") {
         getChannelMessages();
@@ -129,7 +129,8 @@ const MessageContainer = () => {
               {moment(message.timestamp).format("LL")}
             </div>
           )}
-          {selectedChatType === "contact" && renderDMMessages(message)}
+          {(selectedChatType === "contact" || selectedChatType == "ai") &&
+            renderDMMessages(message)}
           {selectedChatType === "channel" && renderChannelMessages(message)}
         </div>
       );

@@ -8,8 +8,9 @@ export const createChatSlice = (set, get) => ({
   fileUploadProgress: 0,
   fileDownloadProgress: 0,
   channels: [],
-
+  ai: [],
   setChannels: (channels) => set({ channels }),
+  setAi: (ai) => set({ ai }),
   setIsUploading: (isUploading) => set({ isUploading }),
   setIsDownloading: (isDownloading) => set({ isDownloading }),
   setFileUploadProgress: (fileUploadProgress) => set({ fileUploadProgress }),
@@ -67,14 +68,16 @@ export const createChatSlice = (set, get) => ({
     }
   },
 
+  
+
   addContactsInDMContacts: (message) => {
     const userId = get().userInfo.id;
     const fromId =
       message.sender._id === userId
         ? message.recipient._id
-        : message.semder._id;
+        : message.sender._id;
     const fromData =
-      message.sender._id === userId ? message.recipient : message.semder;
+      message.sender._id === userId ? message.recipient : message.sender;
     const dmContacts = get().directMessagesContacts;
     const data = dmContacts.find((contact) => contact._id === fromId);
     const index = dmContacts.findIndex((contact) => contact._id === fromId);

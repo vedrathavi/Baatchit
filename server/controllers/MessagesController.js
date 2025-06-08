@@ -1,5 +1,6 @@
 import Message from "../models/MessageModel.js";
 import { mkdir, mkdirSync, renameSync } from "fs";
+import { generateGeminiResponse } from "../services/GeminiServices.js";
 
 export const getMessages = async (req, res, next) => {
   try {
@@ -36,9 +37,21 @@ export const uploadFile = async (req, res, next) => {
     mkdirSync(fileDir, { recursive: true });
     renameSync(req.file.path, fileName);
 
-    return res.status(200).json({filePath:fileName})
+    return res.status(200).json({ filePath: fileName });
   } catch (err) {
     console.log({ err });
     return res.status(500).send("Internal Server Error");
+  }
+};
+
+export const getAIChatResponse = async (req, res) => {
+  const { message } = req.body;
+
+  if (!message) return res.status(400).send("Message is required");
+  try {
+    const aiReply = await generateGeminiResponse(message);
+    return res.status(200).json({ response: aiReply });
+  } catch (err) {
+    return res.status(500).send("Failed to get AI Response");
   }
 };

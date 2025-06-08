@@ -30,7 +30,7 @@ import { Button } from "@/components/ui/button";
 import MultipleSelector from "@/components/ui/multipleselect";
 
 const CreateChannel = () => {
-  const { setSelectedChatType, setSelectedChatData, addChannel } =
+  const { /*setSelectedChatType, setSelectedChatData,*/ addChannel } =
     useAppStore();
   const [newChannelModal, setNewChannelModal] = useState(false);
 

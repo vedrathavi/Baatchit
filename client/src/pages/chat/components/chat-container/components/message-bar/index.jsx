@@ -7,7 +7,8 @@ import EmojiPicker from "emoji-picker-react";
 import { useAppStore } from "@/store";
 import { useSocket } from "@/context/SocketContext";
 import { apiClient } from "@/lib/api-client";
-import { UPLOAD_FILE_ROUTE } from "@/utils/constants";
+import { GEMINI_BOT_ID, UPLOAD_FILE_ROUTE } from "@/utils/constants";
+
 const MessageBar = () => {
   const emojiRef = useRef();
   const fileInputRef = useRef();
@@ -37,7 +38,17 @@ const MessageBar = () => {
   };
 
   const handleSendMessage = async () => {
-    if (selectedChatType === "contact") {
+    const isAi = selectedChatData?._id === GEMINI_BOT_ID;
+
+    if (isAi) {
+      socket.emit("send-ai-message", {
+        sender: userInfo.id,
+        content: message,
+        recipient: selectedChatData._id,
+        messageType: "text",
+        fileUrl: undefined,
+      });
+    } else if (selectedChatType === "contact") {
       socket.emit("sendMessage", {
         sender: userInfo.id,
         content: message,

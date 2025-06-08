@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+  isAi: {
+    type: Boolean,
+    default: false,
+  },
   profileSetup: {
     type: Boolean,
     default: false,

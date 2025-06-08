@@ -1,7 +1,12 @@
-import { disconnect } from "mongoose";
 import { Server as SocketIoServer } from "socket.io";
+import mongoose from "mongoose";
+
 import Message from "./models/MessageModel.js";
 import Channel from "./models/ChannelModel.js";
+import { generateGeminiResponse } from "./services/GeminiServices.js";
+
+const GEMINI_BOT_ID = new mongoose.Types.ObjectId(process.env.GEMINI_BOT_ID);
+
 const setupSocket = (server) => {
   const io = new SocketIoServer(server, {
     cors: {
@@ -78,6 +83,55 @@ const setupSocket = (server) => {
     }
   };
 
+  const sendAIMessage = async (message) => {
+    try {
+      const { sender, content, messageType } = message;
+
+      // Save user's message
+      const userMessage = await Message.create({
+        sender,
+        recipient: GEMINI_BOT_ID,
+        messageType,
+        timestamp: new Date(),
+        content,
+      });
+
+      const populatedUserMsg = await Message.findById(userMessage._id)
+        .populate("sender", "id email firstName lastName image color")
+        .exec();
+
+      const senderSocketId = userSocketMap.get(sender);
+
+      // Emit user's message back to sender client
+      if (senderSocketId) {
+        io.to(senderSocketId).emit("recieveMessage", populatedUserMsg);
+      }
+
+      // Get AI reply
+      const aiResponseText = await generateGeminiResponse(content);
+
+      // Save AI message
+      const aiMessage = await Message.create({
+        sender: GEMINI_BOT_ID,
+        recipient: sender,
+        messageType: "text",
+        timestamp: new Date(),
+        content: aiResponseText,
+      });
+
+      const populatedAiMsg = await Message.findById(aiMessage._id)
+        .populate("sender", "id email firstName lastName image color")
+        .exec();
+
+      // Emit AI message back to sender client
+      if (senderSocketId) {
+        io.to(senderSocketId).emit("recieveMessage", populatedAiMsg);
+      }
+    } catch (err) {
+      console.error("Error in send-ai-message:", err.message);
+    }
+  };
+
   io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId;
 
@@ -91,6 +145,7 @@ const setupSocket = (server) => {
     socket.on("sendMessage", sendMessage);
     socket.on("disconnect", () => disconnect(socket));
     socket.on("send-channel-message", sendChannelMessage);
+    socket.on("send-ai-message", (message) => sendAIMessage(message));
   });
 };
 

@@ -22,6 +22,9 @@ export const searchContacts = async (req, res, next) => {
         {
           $or: [{ firstName: regex }, { lastName: regex }, { email: regex }],
         },
+        {
+          isAi: { $ne: true },
+        },
       ],
     });
 
@@ -71,6 +74,11 @@ export const getContactsForDMList = async (req, res, next) => {
         $unwind: "$contactInfo",
       },
       {
+        $match: {
+          "contactInfo.isAi": { $ne: true },
+        },
+      },
+      {
         $project: {
           _id: 1,
           lastMessageTime: 1,
@@ -86,7 +94,13 @@ export const getContactsForDMList = async (req, res, next) => {
         $sort: { lastMessageTime: -1 },
       },
     ]);
-    return res.status(200).json({ contacts });
+
+    const aiBot = await User.findOne(
+      { isAi: true },
+      "firstName lastName email image color _id"
+    );
+
+    return res.status(200).json({ contacts, aiBot });
   } catch (err) {
     console.log({ err });
     return res.status(500).send("Internal Server Error");
@@ -96,7 +110,7 @@ export const getContactsForDMList = async (req, res, next) => {
 export const getAllContacts = async (req, res, next) => {
   try {
     const users = await User.find(
-      { _id: { $ne: req.userId } },
+      { _id: { $ne: req.userId }, isAi: { $ne: true } },
       "firstName lastName _id email"
     );
 
