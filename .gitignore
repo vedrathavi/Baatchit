@@ -10,6 +10,7 @@ dist/
 .temp/
 server/uploads/profiles
 server/uploads/files
+server/keys/gemini-service-account.json
 
 
 # === Logs ===
