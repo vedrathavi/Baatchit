@@ -39,7 +39,9 @@ const MessageBar = () => {
   };
 
   const handleSendMessage = async () => {
+    console.log("handleSendMessage called");
     const isAi = selectedChatData?._id === GEMINI_BOT_ID;
+    console.log("selectedChatData._id:", selectedChatData?._id, "GEMINI_BOT_ID:", GEMINI_BOT_ID, "isAi:", isAi);
 
     const messageObj = {
       sender: userInfo.id,
