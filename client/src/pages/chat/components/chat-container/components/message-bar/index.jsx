@@ -39,9 +39,10 @@ const MessageBar = () => {
   };
 
   const handleSendMessage = async () => {
-    console.log("handleSendMessage called");
+    if (!message.trim()) return; // prevent sending empty messages
+    // console.log("handleSendMessage called");
     const isAi = selectedChatData?._id === GEMINI_BOT_ID;
-    console.log("selectedChatData._id:", selectedChatData?._id, "GEMINI_BOT_ID:", GEMINI_BOT_ID, "isAi:", isAi);
+    // console.log("selectedChatData._id:", selectedChatData?._id, "GEMINI_BOT_ID:", GEMINI_BOT_ID, "isAi:", isAi);
 
     const messageObj = {
       sender: userInfo.id,
@@ -169,6 +170,7 @@ const MessageBar = () => {
       <button
         className="bg-purple-800  focus:bg-purple-900 p-4.5 flex items-center justify-center hover:bg-purple-900 rounded-xl focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
         onClick={handleSendMessage}
+        disabled={!message.trim()}
       >
         <FiSend className="text-2xl" />
       </button>

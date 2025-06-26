@@ -8,6 +8,8 @@ import contactRoutes from "./routes/ContactRoutes.js";
 import setupSocket from "./socket.js";
 import messagesRoutes from "./routes/MessagesRoutes.js";
 import channelRoutes from "./routes/ChannelRoutes.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
@@ -15,6 +17,9 @@ const app = express();
 app.set("trust proxy", 1);
 const port = process.env.PORT;
 const databaseURL = process.env.DATABASE_URL;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(
   cors({
@@ -33,6 +38,14 @@ app.use("/api/auth", authRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/channel", channelRoutes);
+
+// Serve static files from the client build directory
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+// SPA fallback: serve index.html for any unknown route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
 
 const server = app.listen(port, console.log(`server running on port ${port}`));
 
