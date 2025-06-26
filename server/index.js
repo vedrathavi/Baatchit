@@ -39,13 +39,13 @@ app.use("/api/contacts", contactRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/channel", channelRoutes);
 
-// Serve static files from the client build directory
-app.use(express.static(path.join(__dirname, "../client/dist")));
+// // Serve static files from the client build directory
+// app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// SPA fallback: serve index.html for any unknown route
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
-});
+// // SPA fallback: serve index.html for any unknown route
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+// });
 
 const server = app.listen(port, console.log(`server running on port ${port}`));
 
