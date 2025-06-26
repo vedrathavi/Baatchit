@@ -85,6 +85,7 @@ const setupSocket = (server) => {
 
   const sendAIMessage = async (message) => {
     try {
+      console.log("Received send-ai-message:", message);
       const { sender, content, messageType } = message;
 
       // Save user's message
