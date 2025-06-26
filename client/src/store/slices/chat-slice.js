@@ -1,3 +1,5 @@
+import { GEMINI_BOT_ID } from "@/utils/constants";
+
 export const createChatSlice = (set, get) => ({
   selectedChatType: undefined,
   selectedChatData: undefined,
@@ -36,6 +38,7 @@ export const createChatSlice = (set, get) => ({
   addMessage: (message) => {
     const selectedChatMessages = get().selectedChatMessages;
     const selectedChatType = get().selectedChatType;
+    const userInfo = get().userInfo;
 
     set({
       selectedChatMessages: [
@@ -81,6 +84,7 @@ export const createChatSlice = (set, get) => ({
     const dmContacts = get().directMessagesContacts;
     const data = dmContacts.find((contact) => contact._id === fromId);
     const index = dmContacts.findIndex((contact) => contact._id === fromId);
+    if (String(fromId) === String(GEMINI_BOT_ID)) return;
     if (index !== -1 && index !== undefined) {
       dmContacts.splice(index, 1);
       dmContacts.unshift(data);

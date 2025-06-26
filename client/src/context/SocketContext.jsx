@@ -9,7 +9,7 @@ export const useSocket = () => {
   return useContext(SocketContext);
 };
 
-export const SocketeProvider = ({ children }) => {
+export const SocketProvider = ({ children }) => {
   const socket = useRef();
   const { userInfo } = useAppStore();
 
@@ -32,13 +32,13 @@ export const SocketeProvider = ({ children }) => {
           addContactsInDMContacts,
         } = useAppStore.getState();
 
-        const isAI = message.sender._id === GEMINI_BOT_ID;
+        const isAI = String(message.sender._id) === String(GEMINI_BOT_ID) || String(message.recipient._id) === String(GEMINI_BOT_ID);
         if (
           selectedChatType !== undefined &&
           (selectedChatData._id === message.sender._id ||
             selectedChatData._id === message.recipient._id)
         ) {
-          console.log("recieved:", message.content);
+          // console.log("recieved:", message.content);
           addMessage(message);
         }
 

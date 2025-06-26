@@ -5,6 +5,7 @@ import { apiClient } from "@/lib/api-client";
 import {
   GET_DM_CONTACTS_ROUTES,
   GET_USER_CHANNELS_ROUTE,
+  GEMINI_BOT_ID,
 } from "@/utils/constants";
 import { useAppStore } from "@/store";
 import ContactList from "@/components/contact-list";
@@ -63,7 +64,9 @@ const ContactsContainer = () => {
           <NewDM />
         </div>
         <div className="max-h-[40vh] overflow-y-auto scrollbar-hidden">
-          <ContactList contacts={directMessagesContacts} />
+          <ContactList contacts={directMessagesContacts.filter(
+            c => c && c._id && String(c._id) !== String(GEMINI_BOT_ID) && (c.firstName || c.email)
+          )} />
         </div>
       </div>
       <div className="my-3">

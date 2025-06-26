@@ -19,6 +19,7 @@ const MessageBar = () => {
     userInfo,
     setIsUploading,
     setFileUploadProgress,
+    addMessage,
   } = useAppStore();
   const [message, setMessage] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
@@ -40,31 +41,33 @@ const MessageBar = () => {
   const handleSendMessage = async () => {
     const isAi = selectedChatData?._id === GEMINI_BOT_ID;
 
+    const messageObj = {
+      sender: userInfo.id,
+      content: message,
+      recipient: selectedChatData._id,
+      messageType: "text",
+      fileUrl: undefined,
+    };
+
     if (isAi) {
-      socket.emit("send-ai-message", {
-        sender: userInfo.id,
-        content: message,
-        recipient: selectedChatData._id,
-        messageType: "text",
-        fileUrl: undefined,
-      });
+      socket.emit("send-ai-message", messageObj);
+       //  add our own message to the UI
+    addMessage({
+      ...messageObj,
+      sender: { _id: userInfo.id }, // match server's structure
+      recipient: { _id: selectedChatData._id },
+    });
     } else if (selectedChatType === "contact") {
-      socket.emit("sendMessage", {
-        sender: userInfo.id,
-        content: message,
-        recipient: selectedChatData._id,
-        messageType: "text",
-        fileUrl: undefined,
-      });
+      socket.emit("sendMessage", messageObj);
     } else if (selectedChatType === "channel") {
       socket.emit("send-channel-message", {
-        sender: userInfo.id,
-        content: message,
-        messageType: "text",
-        fileUrl: undefined,
+        ...messageObj,
         channelId: selectedChatData._id,
       });
     }
+
+   
+
     setMessage("");
   };
 
@@ -117,6 +120,8 @@ const MessageBar = () => {
     }
   };
 
+  const isAi = selectedChatData?._id === GEMINI_BOT_ID;
+
   return (
     <div className="h-[10vh] bg-neutral-900 flex justify-center items-center px-8 gap-3 lg:w-full  mb-6">
       <div className="flex-1 flex bg-neutral-800 rounded-xl items-center gap-5 pr-5">
@@ -128,8 +133,9 @@ const MessageBar = () => {
           onChange={(e) => setMessage(e.target.value)}
         />
         <button
-          className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
-          onClick={handleAttachmentClick}
+          className={`text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all ${isAi ? 'opacity-50 cursor-not-allowed' : ''}`}
+          onClick={isAi ? undefined : handleAttachmentClick}
+          disabled={isAi}
         >
           <GrAttachment className="text-2xl" />
         </button>
@@ -139,6 +145,7 @@ const MessageBar = () => {
           className="hidden"
           ref={fileInputRef}
           onChange={handleAttachmentChange}
+          disabled={isAi}
         ></input>
         <div className="relative" ref={emojiRef}>
           <button
