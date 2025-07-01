@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 
 import { useAppStore } from "@/store";
 import {
@@ -149,20 +149,19 @@ const MessageContainer = () => {
               isMyMessage
                 ? "bg-neutral-300/10 text-neutral-100 border border-neutral-500/20 rounded-tl-xl rounded-br-xl rounded-bl-xl rounded-tr-xs"
                 : "bg-neutral-700/10 text-neutral-200 border border-neutral-600/20 rounded-tr-xl rounded-br-xl rounded-bl-xl rounded-tl-xs "
-            } border inline-block py-2 px-4 my-1 max-w-[50%] break-words mt-4`}
+            } border inline-block py-2 px-4 my-1 sm:max-w-[90%] md:max-w-[70%] break-words mt-4`}
           >
-              <ReactMarkdown>{message.content}</ReactMarkdown>
-            
+            <ReactMarkdown>{message.content}</ReactMarkdown>
           </div>
         )}
 
         {message.messageType === "file" && (
           <div
             className={`${
-             isMyMessage
+              isMyMessage
                 ? "bg-neutral-300/10 text-neutral-100 border border-neutral-500/20 rounded-tl-2xl rounded-br-2xl rounded-bl-2xl rounded-tr-xs"
                 : "bg-neutral-700/10 text-neutral-200 border border-neutral-600/20 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl rounded-tl-xs "
-            } border inline-block py-4 px-4 my-1 max-w-[50%] break-words mt-4`}
+            } border inline-block py-4 px-4 my-1 sm:max-w-[90%] md:max-w-[70%] break-words mt-4`}
           >
             {checkIfImage(message.fileUrl) ? (
               <div
@@ -180,13 +179,15 @@ const MessageContainer = () => {
                 />
               </div>
             ) : (
-              <div className="flex items-center justify-center gap-4 p-2">
+              <div className="flex items-center justify-between max-w-[70vw] gap-4 p-2">
                 <span className="text-xl bg-black/20 rounded-lg p-3">
                   <MdFolderZip />
                 </span>
-                <span>{message.fileUrl.split("/").pop()}</span>
+                <span className="max-w-[60%] break-words">
+                  {message.fileUrl.split("/").pop()}
+                </span>
                 <span
-                  className="text-lg bg-green-800/20 text-green-600 rounded-full p-3  cursor-pointer transition-all duration-300 hover:bg-green-800/50"
+                  className="text-lg bg-green-800/20 text-green-600 rounded-full p-3 cursor-pointer transition-all duration-300 hover:bg-green-800/50"
                   onClick={() => downloadFile(message.fileUrl)}
                 >
                   <IoMdArrowRoundDown />
@@ -234,12 +235,12 @@ const MessageContainer = () => {
               </span>
 
               {message.messageType === "text" && (
-                <div className="bg-neutral-700/10 text-neutral-100 border border-neutral-600/20 inline-block py-2 px-4 my-1 max-w-[50vw] break-words rounded-tl-xs rounded-br-xl rounded-bl-xl rounded-tr-xl">
+                <div className="bg-neutral-700/10 text-neutral-100 border  border-neutral-600/20 inline-block py-2 px-4 my-1 break-words rounded-tl-xs rounded-br-xl rounded-bl-xl rounded-tr-xl">
                   <ReactMarkdown>{message.content}</ReactMarkdown>
                 </div>
               )}
               {message.messageType === "file" && (
-                <div className="bg-neutral-700/10 text-neutral-100 border border-neutral-600/20 inline-block py-2 px-2 my-1  max-w-[50vw] break-words rounded-tl-xs rounded-br-xl rounded-bl-xl rounded-tr-xl">
+                <div className="bg-neutral-700/10 text-neutral-100 border border-neutral-600/20  inline-block py-2 px-2 my-1  max-w-[100rem] break-words rounded-tl-xs rounded-br-xl rounded-bl-xl rounded-tr-xl">
                   {checkIfImage(message.fileUrl) ? (
                     <div
                       className="cursor-pointer"
@@ -259,7 +260,9 @@ const MessageContainer = () => {
                       <span className="text-xl bg-black/20 rounded-lg p-3">
                         <MdFolderZip />
                       </span>
-                      <span>{message.fileUrl.split("/").pop()}</span>
+                      <span className="max-w-[60%] break-words">
+                        {message.fileUrl.split("/").pop()}
+                      </span>
                       <span
                         className="text-lg bg-green-800/20 text-green-600 rounded-full p-3 cursor-pointer transition-all duration-300 hover:bg-green-800/50"
                         onClick={() => downloadFile(message.fileUrl)}
@@ -328,7 +331,7 @@ const MessageContainer = () => {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto scrollbar-hidden p-4 px-8 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] sm:w-full">
+    <div className="flex-1 overflow-y-auto scrollbar-hidden p-4 px-8 md:w-[70vw] xl:w-[80vw] sm:w-full">
       {renderMessages()}
       <div ref={scrollRef}></div>
       {showImage && (

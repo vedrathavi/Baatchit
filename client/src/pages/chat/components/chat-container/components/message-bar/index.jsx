@@ -54,12 +54,12 @@ const MessageBar = () => {
 
     if (isAi) {
       socket.emit("send-ai-message", messageObj);
-       //  add our own message to the UI
-    addMessage({
-      ...messageObj,
-      sender: { _id: userInfo.id }, // match server's structure
-      recipient: { _id: selectedChatData._id },
-    });
+      //  add our own message to the UI
+      addMessage({
+        ...messageObj,
+        sender: { _id: userInfo.id }, // match server's structure
+        recipient: { _id: selectedChatData._id },
+      });
     } else if (selectedChatType === "contact") {
       socket.emit("sendMessage", messageObj);
     } else if (selectedChatType === "channel") {
@@ -68,8 +68,6 @@ const MessageBar = () => {
         channelId: selectedChatData._id,
       });
     }
-
-   
 
     setMessage("");
   };
@@ -126,7 +124,7 @@ const MessageBar = () => {
   const isAi = selectedChatData?._id === GEMINI_BOT_ID;
 
   return (
-    <div className="h-[10vh] bg-neutral-900 flex justify-center items-center px-8 gap-3 lg:w-full  mb-6">
+    <div className="max-h-[10vh] bg-neutral-900 flex justify-center items-center gap-3 mb-3 py-6 sm:px-3 md:px-8">
       <div className="flex-1 flex bg-neutral-800 rounded-xl items-center gap-5 pr-5">
         <input
           type="text"
@@ -136,7 +134,9 @@ const MessageBar = () => {
           onChange={(e) => setMessage(e.target.value)}
         />
         <button
-          className={`text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all ${isAi ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all ${
+            isAi ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           onClick={isAi ? undefined : handleAttachmentClick}
           disabled={isAi}
         >
@@ -149,7 +149,7 @@ const MessageBar = () => {
           ref={fileInputRef}
           onChange={handleAttachmentChange}
           disabled={isAi}
-        ></input>
+        />
         <div className="relative" ref={emojiRef}>
           <button
             className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
@@ -168,7 +168,7 @@ const MessageBar = () => {
         </div>
       </div>
       <button
-        className="bg-purple-800  focus:bg-purple-900 p-4.5 flex items-center justify-center hover:bg-purple-900 rounded-xl focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+        className="bg-purple-800 focus:bg-purple-900 p-4.5 flex items-center justify-center hover:bg-purple-900 rounded-xl focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
         onClick={handleSendMessage}
         disabled={!message.trim()}
       >
